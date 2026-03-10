@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@theme {
+  /* Fondos y Superficies */
+  --color-edelpa-bg: #FFFFFF;
+  --color-edelpa-divider: #EFEFEF;
+
+  /* Colores Principales (Azules) */
+  --color-edelpa-primary: #223C57;
+  --color-edelpa-primary-dark: #122941;
+
+  /* Acentuado (Dorado/Amarillo para botones y destacar) */
+  --color-edelpa-accent: #F0C761;
+
+  /* Texto */
+  --color-edelpa-text: #000000;
+  --color-edelpa-text-light: #4A5568; /* Un gris para textos secundarios si lo necesitas */
+}

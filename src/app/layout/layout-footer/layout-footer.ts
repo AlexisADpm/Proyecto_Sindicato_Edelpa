@@ -7,4 +7,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './layout-footer.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LayoutFooter { }
+export class LayoutFooter { 
+  email = 'sindicatoedelpa1985@gmail.com';
+}

@@ -1,1 +1,42 @@
-<p>galeria works!</p>,
+<section class="py-20 px-6 md:px-[100px] bg-white text-center">
+  
+  <h2 class="text-edelpa-primary text-5xl font-extrabold mb-12">Galería de Actividades</h2>
+
+  <nav class="mb-16">
+    <ul class="flex flex-wrap justify-center gap-8">
+      <li *ngFor="let cat of categorias">
+        <button 
+          (click)="cambiarCategoria(cat)"
+          [class.text-edelpa-primary]="categoriaActiva === cat"
+          [class.font-bold]="categoriaActiva === cat"
+          [class.text-gray-400]="categoriaActiva !== cat"
+          class="text-lg uppercase tracking-wider transition-all hover:text-edelpa-accent">
+          {{ cat }}
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+    <div *ngFor="let album of albumsFiltrados" 
+         class="group relative cursor-pointer overflow-hidden rounded-[2rem] shadow-lg transition-transform hover:-translate-y-2">
+      
+      <img [src]="album.imagenUrl" [alt]="album.titulo" class="h-[250px] w-full object-cover">
+
+      <div class="absolute bottom-4 left-4 right-4 md:right-auto">
+        <div class="bg-white p-3 rounded-xl shadow-md text-left inline-block">
+          <p class="text-edelpa-primary font-bold text-sm">{{ album.titulo }}</p>
+          <div class="flex items-center gap-1 text-gray-500 text-[10px]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ album.cantidadFotos }} fotos</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>

@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GaleriaService } from '../services/galeria.service';
+import { GaleriaInterface, CategoriaConteo } from '../interfaces/galeria.interface';
+import { Router, RouterLink } from '@angular/router';
 
 interface Album {
   id: number;
@@ -12,29 +15,45 @@ interface Album {
 @Component({
   selector: 'app-galeria',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './galeria.html'
 })
 export class Galeria {
-  categoriaActiva: string = 'Todos';
 
-  categorias: string[] = ['Todos', 'Paseos', 'Cumpleaños', 'Fiestas patrias', 'Navidad', 'Deportes'];
+  //Servicios
+  galeriaService = inject(GaleriaService);
+  router = inject(Router);
 
-  albums: Album[] = [
-    { id: 1, titulo: 'Fiesta de Navidad 2024', categoria: 'Navidad', cantidadFotos: 24, imagenUrl: 'https://www.sindicatoedelpa.cl/datSindicato/nv1.JPG' },
-    { id: 2, titulo: 'Paseo Anual', categoria: 'Paseos', cantidadFotos: 15, imagenUrl: 'https://www.sindicatoedelpa.cl/datSindicato/paseo1.jpg' },
-    { id: 3, titulo: 'Celebración 18 Septiembre', categoria: 'Fiestas patrias', cantidadFotos: 30, imagenUrl: 'https://www.sindicatoedelpa.cl/datSindicato/paseo2024/pasDat2/IMG_3834.JPG' },
-    { id: 4, titulo: 'Torneo de Fútbol', categoria: 'Deportes', cantidadFotos: 12, imagenUrl: 'https://www.sindicatoedelpa.cl/datSindicato/paseo2024/pasDat1/IMG_3428.JPG' },
-    { id: 5, titulo: 'Día del Trabajador', categoria: 'Paseos', cantidadFotos: 20, imagenUrl: 'https://www.sindicatoedelpa.cl/datSindicato/paseo2024/pasDat2/IMG_3549.JPG' },
-    { id: 6, titulo: 'Paseo de pesca', categoria: 'Deportes', cantidadFotos: 8, imagenUrl: 'https://www.sindicatoedelpa.cl/datDeporte/05Pesca/c1975a93-214b-4c44-9c7f-8e22597913ea.jpg' }
-  ];
+  //Atributos
+  categorias: string[] = ['todos', 'paseos', 'cumpleaños', 'fiestas patrias', 'navidad', 'deportes'];
 
-  get albumsFiltrados() {
-    if (this.categoriaActiva === 'Todos') return this.albums;
-    return this.albums.filter(a => a.categoria === this.categoriaActiva);
+  // Recurso de conteos
+  recursoConteos = this.galeriaService.recursoConteosCategorias(this.categorias);
+
+
+  // Señal computada para obtener los conteos de categorías
+  conteosData = computed(() => {
+    const data: CategoriaConteo[] | undefined = this.recursoConteos.value();
+    return data ?? [];
+  });
+
+  categoriaActiva = signal<string>("todos");
+  albumsFiltrados = computed(()=>{
+
+    if (this.categoriaActiva() === 'todos') return this.conteosData();
+    return this.conteosData().filter(a => a.nombre === this.categoriaActiva())
+  });
+
+  constructor() {
+    // Efecto para verificar la integridad de los datos en consola
+    effect(() => {
+      console.log('Conteos por Categoría:', this.conteosData());
+    });
   }
+
 
   cambiarCategoria(cat: string) {
-    this.categoriaActiva = cat;
-  }
+    console.log(cat);
+    this.categoriaActiva.set(cat);
+    }
 }

@@ -16,7 +16,19 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: Home },
       { path: 'sindicato', component: Sindicato },
-      { path: 'galeria', component: Galeria },
+      {
+        path: 'galeria',
+        children: [
+          { path: '', component: Galeria },
+          {
+            path: ':section',
+            loadComponent: () =>
+              import('./galeria/active-page/active-page.component').then(
+                (m) => m.ActivePage
+              ),
+          },
+        ],
+      },
       { path: 'deporte', component: Deporte },
       { path: 'bienestar', component: Bienestar },
       { path: 'documentos', component: Documentos },

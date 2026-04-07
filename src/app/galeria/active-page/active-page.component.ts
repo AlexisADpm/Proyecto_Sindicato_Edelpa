@@ -38,18 +38,8 @@ export class ActivePage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
-    //Obtenemos las imagenes nuevamente al recargar la pagina
-    this.galeriaService.obtenerImagenesPaginadas(this.sectionName(),10,null)
-    .subscribe({
-      next: (result) => {
-        this.imagenes.update(prev => [...result.data]);
-      },
-      error: (error) =>{
-        console.log(error);
-      }
-    });
-    console.log();
+    // Iniciamos la carga usando el método controlado para evitar duplicados
+    this.cargarMas(this.sectionName());
     this.initLightbox();
   }
 

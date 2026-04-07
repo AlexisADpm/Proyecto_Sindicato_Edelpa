@@ -9,3 +9,10 @@ export interface CategoriaConteo {
   nombre: string;
   cantidad: number;
 }
+
+export interface subCarpetaImagenes {
+  id?: string;
+  cantImagenes: number;
+  nombre: string;
+  tipo: string;
+}

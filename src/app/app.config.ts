@@ -1,7 +1,7 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
 import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, provideFirestore } from '@angular/fire/firestore';
 
 //Servicio firebase
@@ -19,10 +19,13 @@ const firebaseConfig = {
 
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes, withComponentInputBinding()),provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideFirestore(() =>{
-      return initializeFirestore(initializeApp(firebaseConfig),{
-        localCache: persistentLocalCache({tabManager:persistentMultipleTabManager()})
+  providers: [
+    provideRouter(routes, withComponentInputBinding()),
+    provideFirebaseApp(() => initializeApp(firebaseConfig)),
+    provideFirestore(() => {
+      return initializeFirestore(getApp(), {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
       })
-    })]
+    })
+  ]
 };

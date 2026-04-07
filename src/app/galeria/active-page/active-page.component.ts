@@ -32,24 +32,8 @@ export class ActivePage implements OnInit, OnDestroy {
 
   private lightbox: PhotoSwipeLightbox | null = null;
 
-  //TODO: Activar scroll infinito y añadir metodo del service de recarga al constructor
-  constructor() {
-    console.log(this.sectionName());
-  }
-
   ngOnInit() {
-
-    //Obtenemos las imagenes nuevamente al recargar la pagina
-    this.galeriaService.obtenerImagenesPaginadas(this.sectionName(),10,null)
-    .subscribe({
-      next: (result) => {
-        this.imagenes.update(prev => [...result.data]);
-      },
-      error: (error) =>{
-        console.log(error);
-      }
-    });
-    console.log();
+    this.resetGallery(this.sectionName());
     this.initLightbox();
   }
 
@@ -69,6 +53,8 @@ export class ActivePage implements OnInit, OnDestroy {
     this.lightbox.init();
   }
 
+
+  //Reseteo de la galeria de imagenes
   resetGallery(section: string) {
     this.imagenes.set([]);
     this.ultimoDoc.set(null);
@@ -110,6 +96,21 @@ export class ActivePage implements OnInit, OnDestroy {
 
     if (pos >= max - 300) {
       this.cargarMas(this.sectionName());
+    }
+  }
+
+  /**
+   * Actualiza dinámicamente el tamaño de la imagen en PhotoSwipe
+   * para evitar que las imágenes se aplasten
+   */
+  onImageLoad(event: Event) {
+    const img = event.target as HTMLImageElement;
+    if (img) {
+      const a = img.closest('a');
+      if (a) {
+        a.setAttribute('data-pswp-width', img.naturalWidth.toString());
+        a.setAttribute('data-pswp-height', img.naturalHeight.toString());
+      }
     }
   }
 }

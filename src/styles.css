@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "photoswipe/dist/photoswipe.css";
+@import 'animate.css';
 
 @theme {
   /* Fondos y Superficies */
@@ -15,5 +16,6 @@
 
   /* Texto */
   --color-edelpa-text: #000000;
-  --color-edelpa-text-light: #4A5568; /* Un gris para textos secundarios si lo necesitas */
+  --color-edelpa-text-light: #4A5568;
+  /* Un gris para textos secundarios si lo necesitas */
 }

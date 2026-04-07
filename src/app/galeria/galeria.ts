@@ -1,21 +1,15 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GaleriaService } from '../services/galeria.service';
-import { GaleriaInterface, CategoriaConteo } from '../interfaces/galeria.interface';
+import { GaleriaInterface, CategoriaConteo, subCarpetaImagenes } from '../interfaces/galeria.interface';
 import { Router, RouterLink } from '@angular/router';
-
-interface Album {
-  id: number;
-  titulo: string;
-  categoria: string;
-  cantidadFotos: number;
-  imagenUrl: string;
-}
+import { rxResource } from '@angular/core/rxjs-interop';
+import { AnimarEnScrollDirective } from '../shared/directives/animar-en-scroll.directive';
 
 @Component({
   selector: 'app-galeria',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AnimarEnScrollDirective],
   templateUrl: './galeria.html'
 })
 export class Galeria {
@@ -26,34 +20,41 @@ export class Galeria {
 
   //Atributos
   categorias: string[] = ['todos', 'paseos', 'cumpleaños', 'fiestas patrias', 'navidad', 'deportes'];
-
-  // Recurso de conteos
-  recursoConteos = this.galeriaService.recursoConteosCategorias(this.categorias);
-
-
-  // Señal computada para obtener los conteos de categorías
-  conteosData = computed(() => {
-    const data: CategoriaConteo[] | undefined = this.recursoConteos.value();
-    return data ?? [];
-  });
-
-  categoriaActiva = signal<string>("todos");
-  albumsFiltrados = computed(()=>{
-
-    if (this.categoriaActiva() === 'todos') return this.conteosData();
-    return this.conteosData().filter(a => a.nombre === this.categoriaActiva())
-  });
+  cargaSubCarpetas = false;
+  dataSubCarpetas = signal<subCarpetaImagenes[] | null>(null);
+  categoriaActiva = signal<string>('todos');
 
   constructor() {
-    // Efecto para verificar la integridad de los datos en consola
-    effect(() => {
-      console.log('Conteos por Categoría:', this.conteosData());
+    this.cargarSubCarpetas();
+  }
+
+  //Metodos
+  dataSubCarpetasFiltradas = computed(() => {
+    const data = this.dataSubCarpetas();
+    if (!data) return null;
+
+    const categoria = this.categoriaActiva();
+    if (categoria === 'todos') return data;
+
+    return data.filter(item => item.tipo.toLowerCase() === categoria.toLowerCase());
+  });
+
+  cambiarCategoria(cat: string) {
+    this.categoriaActiva.set(cat);
+  }
+
+  cargarSubCarpetas() {
+    if (this.cargaSubCarpetas) return;
+
+    this.cargaSubCarpetas = true;
+
+    this.galeriaService.obtenerSubCarpetasImagenes().then(data => {
+      console.log(data);
+      this.dataSubCarpetas.set(data);
+      this.cargaSubCarpetas = false;
+    }).catch(err => {
+      console.log(err);
     });
   }
 
-
-  cambiarCategoria(cat: string) {
-    console.log(cat);
-    this.categoriaActiva.set(cat);
-    }
 }
